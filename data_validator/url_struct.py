@@ -103,8 +103,9 @@ class URLStructure:
             self.filled_dict = collections.OrderedDict()
             self.fill_dict()
             print(f'inputs: {self.fields_name}')
-
+            
         
+    
     
     def fill_embed_fields(self, embedder):
         if self.is_keywords_not_null_or_empty:
@@ -184,8 +185,8 @@ class URLStructure:
                 labels=self.content_labels
             )
         self.pack_modality_centroids()
-            
-            
+                       
+           
     def _generate_by_idxs(self, iter_data, idxs):
         for idx in idxs:
             yield iter_data[idx]
@@ -261,8 +262,8 @@ class URLStructure:
             ]
         # return np.vstack(list(filter(lambda el: el is not None, all_modality)))
         self.all_modulity_embeddings = np.vstack(list(filter(lambda el: el is not None, all_modality)))
-            
-        
+
+                
     
     def form_output_embeddings(self, agg_clusterer, verbose=0):
         if len(self.all_modulity_embeddings) == 1:
@@ -273,4 +274,3 @@ class URLStructure:
         self.output_summary_embeddings = np.vstack([embedding for embedding in self._generate_by_idxs(
                                             self.all_modulity_embeddings, agg_clusterer.labels_
                                         )])
-        
