@@ -1,0 +1,14 @@
+sentence-transformers>=2.2.0
+transformers>=4.18.0
+numpy>=1.21.6
+scikit_learn
+scipy>=1.7.3
+tqdm
+pandas
+nltk>=3.7
+PyYAML
+requests
+tqdm
+torch>=1.11.0
+nltk>=3.7
+beautifulsoup4

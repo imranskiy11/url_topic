@@ -1,0 +1,10 @@
+core/*
+data/*
+test.py
+cluster/*
+LaBSE/*
+temp/*
+venv_webtopic/*
+pynb.ipynb
+__pycache__/*
+topic_vocab/vocab*
