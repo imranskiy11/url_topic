@@ -1,5 +1,3 @@
-from cProfile import label
-from re import L
 from typing import List
 import collections
 from scipy.spatial.distance import cosine, euclidean
@@ -18,7 +16,7 @@ def show_clustering_labels(data, labels):
             print('-----'*20)
    
 
-def agglomerative_labels_and_centroids(embeddings, agg_clusterer, centroid_clf, verbose=0):
+def agglomerative_labels_and_centroids(embeddings, agg_clusterer, centroid_clf, data=None, verbose=0):
     #clustering
     if len(embeddings) == 1:
         return [0], embeddings
@@ -26,7 +24,7 @@ def agglomerative_labels_and_centroids(embeddings, agg_clusterer, centroid_clf, 
     labels = agg_clusterer.labels_
     if verbose == 1: 
         print(f'Clusters: {labels}')
-        # show_clustering_labels(embeddings, labels)
+        show_clustering_labels(data, labels)
     #get centroid        
     centroid_clf.fit(embeddings, agg_predict)
     centroids = centroid_clf.centroids_
@@ -82,7 +80,7 @@ class URLStructure:
                 
         self.url_path = url_path
         
-
+        
         self.keywords = keywords
         self.title = title
         self.description = description
@@ -105,8 +103,17 @@ class URLStructure:
             print(f'inputs: {self.fields_name}')
             
         
-    
-    
+    # def fill_embed_fields(self, embedder):
+    #     for tokens_input, embedded_token_input in zip(
+    #         [self.keywords, self.title, self.description, self.content],
+    #         [self.embedded_keywords, self.embedded_title, self.embedded_description, self.embedded_content]):
+        
+    #         if bool(tokens_input):
+    #             print(bool(tokens_input))
+    #             embedded_token_input = embedder.word_embeddings_list(
+    #                 tokens_input).detach().cpu().detach() 
+                    
+
     def fill_embed_fields(self, embedder):
         if self.is_keywords_not_null_or_empty:
             self.embedded_keywords = embedder.word_embeddings_list(
@@ -142,6 +149,7 @@ class URLStructure:
                 embeddings=self.embedded_keywords,
                 agg_clusterer=agg_clusterer,
                 centroid_clf=centroid_clf,
+                data=self.keywords,
                 verbose=verbose)
             self.keywords_main_tokens_dict = nearest_embeddings(
                 embeddings=self.embedded_keywords,
@@ -154,6 +162,7 @@ class URLStructure:
                 embeddings=self.embedded_description,
                 agg_clusterer=agg_clusterer,
                 centroid_clf=centroid_clf,
+                data=self.description,
                 verbose=verbose)
             self.description_main_tokens_dict = nearest_embeddings(
                 embeddings=self.embedded_description,
@@ -166,6 +175,7 @@ class URLStructure:
                 embeddings=self.embedded_title,
                 agg_clusterer=agg_clusterer,
                 centroid_clf=centroid_clf,
+                data=self.title,
                 verbose=verbose)
             self.title_main_tokens_dict = nearest_embeddings(
                 embeddings=self.embedded_title,
@@ -178,6 +188,7 @@ class URLStructure:
                 embeddings=self.embedded_content,
                 agg_clusterer=agg_clusterer,
                 centroid_clf=centroid_clf,
+                data=self.content,
                 verbose=verbose)
             self.content_main_tokens_dict = nearest_embeddings(
                 embeddings=self.embedded_content,
@@ -264,13 +275,13 @@ class URLStructure:
         self.all_modulity_embeddings = np.vstack(list(filter(lambda el: el is not None, all_modality)))
 
                 
-    
+    # TODO modified for max size cluster
     def form_output_embeddings(self, agg_clusterer, verbose=0):
         if len(self.all_modulity_embeddings) == 1:
             return self.all_modulity_embeddings
         agg_clusterer.fit(self.all_modulity_embeddings)
         if verbose == 1: 
             print(f'Clusters: {agg_clusterer.labels_}')
-        self.output_summary_embeddings = np.vstack([embedding for embedding in self._generate_by_idxs(
-                                            self.all_modulity_embeddings, agg_clusterer.labels_
-                                        )])
+        self.output_summary_embeddings = \
+            np.vstack([embedding for embedding in self._generate_by_idxs(
+                        self.all_modulity_embeddings, agg_clusterer.labels_)])
