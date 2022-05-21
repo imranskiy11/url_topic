@@ -8,3 +8,7 @@ venv_webtopic/*
 pynb.ipynb
 __pycache__/*
 topic_vocab/vocab*
+data_validator/__pycache__/
+helpers/__pycache__/
+vectorizing/__pycache__/
+__pycache__/
