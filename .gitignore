@@ -12,3 +12,4 @@ data_validator/__pycache__/
 helpers/__pycache__/
 vectorizing/__pycache__/
 __pycache__/
+test_data.py
