@@ -110,7 +110,7 @@ class URLStructure:
         if fill_dict:
             self.filled_dict = collections.OrderedDict()
             self.fill_dict()
-            print(f'inputs: {self.fields_name}')
+            # print(f'inputs: {self.fields_name}')
             
         
     # def fill_embed_fields(self, embedder):
@@ -206,8 +206,8 @@ class URLStructure:
                 labels=self.content_labels
             )
         self.pack_modality_centroids(save_tokens_feedback=save_feedback_tokens)
-        print(f'all modality shape: {self.all_modulity_embeddings.shape}')
-        print(f'feedback tokens: {self.all_modality_feedback_tokens}')
+        # print(f'all modality shape: {self.all_modulity_embeddings.shape}')
+        # print(f'feedback tokens: {self.all_modality_feedback_tokens}')
                
     def _generate_by_idxs(self, iter_data, idxs):
         for idx in idxs:
@@ -309,13 +309,11 @@ class URLStructure:
         if len(self.all_modulity_embeddings) == 1:
             return self.all_modulity_embeddings
         agg_clusterer.fit(self.all_modulity_embeddings)
-        
+        valid_idxs = values_from_key_with_many_values(get_labels_by_clusters(agg_clusterer.labels_))
         if verbose == 1: 
             print(f'Clusters: {agg_clusterer.labels_}')
-        
-        print(f'labels :{get_labels_by_clusters(agg_clusterer.labels_)}')
-        valid_idxs = values_from_key_with_many_values(get_labels_by_clusters(agg_clusterer.labels_))
-        print(f'valid indexes : {valid_idxs}')
+            print(f'labels :{get_labels_by_clusters(agg_clusterer.labels_)}')
+            print(f'valid indexes : {valid_idxs}')
         self.output_summary_embeddings = \
             np.vstack([embedding for embedding in self._generate_by_idxs(
                         self.all_modulity_embeddings, valid_idxs)])
