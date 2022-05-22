@@ -58,36 +58,4 @@ class TopicURL:
     
     def run(self, embeddings, b_value):
         return self.transform_dict(self.form_distances_vocab(embeddings), b_value)
-        
-if __name__ == '__main__':
-    dataset1 = np.vstack(
-        [
-            np.array([1, 2, 3, 2]), np.array([4, 2, 3, 1.4]), np.array([1, 2, 3, 6])
-        ]
-    )
-    dataset2 = np.vstack(
-        [
-            np.array([12, 2, 3, 2]), np.array([1, 3, 3, 1.4]), np.array([8, 2, 3, 1]),
-            np.array([2, 4, 7, 2]), np.array([11, 13, 3, 2.1]), np.array([9, 12, 4, 1])
-        ]
-    )
-    dataset3 = np.vstack(
-        [
-            np.array([1, 2, 3, 2]), np.array([1, 2, 3, 6]), np.array([1, 2, 3, 2]), np.array([1, 2, 3, 6])
-        ]
-    )
-    
-    # print(f'datasets shapes : {dataset1.shape}, {dataset3.shape}')
-    
-    # cos_sim = cosine_similarity(
-    #     dataset1, dataset3
-    # )
-    # print(cos_sim.flatten().round(4))
-    vocab_dict = collections.OrderedDict({
-        'key1': dataset3
-    })
-    topic = TopicURL(vocab_dict)
-    print(topic.cosine_similarity_matrix(dataset1, dataset3))
-    
-    
     
