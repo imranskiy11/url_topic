@@ -226,7 +226,7 @@ class URLStructure:
         else:
             raise Exception(colored('Not passed data', 'red'))
                                                         
-    def keywords_main_tokens(self, embedded=False):
+    def keywords_main_tokens(self, embedded=False, info=False):
         if self.is_keywords_not_null_or_empty:
             return self._main_tokens(
                 embeddings=self.embedded_keywords,
@@ -236,10 +236,11 @@ class URLStructure:
             )
         else:
             # raise Exception(colored('\nKeywords was passed an empty list or null\n', 'red'))
-            print(colored('Keywords was passed an empty list or null', 'red'))
+            if info:
+                print(colored('Keywords was passed an empty list or null', 'red'))
             return None
         
-    def title_main_tokens(self, embedded=False):
+    def title_main_tokens(self, embedded=False, info=False):
         if self.is_title_not_null_or_empty:
             return self._main_tokens(
                 embeddings=self.embedded_title,
@@ -249,10 +250,11 @@ class URLStructure:
             )
         else:
             # raise Exception(colored('\nTitle was passed an empty list or null\n', 'red'))
-            print(colored('Title was passed an empty list or null', 'red'))
+            if info:
+                print(colored('Title was passed an empty list or null', 'red'))
             return None
         
-    def description_main_tokens(self, embedded=False):
+    def description_main_tokens(self, embedded=False, info=False):
         if self.is_description_not_null_or_empty:
             return self._main_tokens(
                 embeddings=self.embedded_description,
@@ -262,10 +264,11 @@ class URLStructure:
             )
         else:
             # raise Exception(colored('\nDescription was passed an empty list or null\n', 'red'))
-            print(colored('Description was passed an empty list or null', 'red'))
+            if info:
+                print(colored('Description was passed an empty list or null', 'red'))
             return None
         
-    def content_main_tokens(self, embedded=False):
+    def content_main_tokens(self, embedded=False, info=False):
         if self.is_content_not_null_or_empty:
             return self._main_tokens(
                 embeddings=self.embedded_content,
@@ -275,7 +278,8 @@ class URLStructure:
             )
         else:
             # raise Exception(colored('\nContents data was passed an empty list or null\n', 'red'))
-            print(colored('Content was passed an empty list or null', 'red'))
+            if info:
+                print(colored('Content was passed an empty list or null', 'red'))
             return None
 
     def pack_modality_centroids(self, save_tokens_feedback=False):

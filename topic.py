@@ -27,8 +27,10 @@ class TopicURL:
     def get_mult_tensor(self, l: list, mult_value: float=10):
         return np.array([10 if i > 0 else 0 for i in l])
         
-    def cosine_similarity_matrix(self, vecs1, vecs2, round_val=4):
-        return cosine_similarity(vecs1, vecs2).flatten()    
+    def cosine_similarity_matrix(self, vecs1, vecs2, cosine_dist_threshold=0, round_val=4):
+        return cosine_similarity(vecs1, vecs2).flatten()  
+        # cosine_sim = cosine_similarity(vecs1, vecs2).flatten()        
+        # return cosine_sim[cosine_sim >= cosine_dist_threshold]
     
     def form_distances_vocab(self, embeddings, threshold_other=0.3, round_val=4):
         # if not bool(embeddings):
@@ -56,38 +58,7 @@ class TopicURL:
         return {class_names[i]: round(softmax_layer_output[i], round_value) for i in range(len(softmax_layer_output))}
     
     
-    def run(self, embeddings, b_value):
-        return self.transform_dict(self.form_distances_vocab(embeddings), b_value)
-        
-if __name__ == '__main__':
-    dataset1 = np.vstack(
-        [
-            np.array([1, 2, 3, 2]), np.array([4, 2, 3, 1.4]), np.array([1, 2, 3, 6])
-        ]
-    )
-    dataset2 = np.vstack(
-        [
-            np.array([12, 2, 3, 2]), np.array([1, 3, 3, 1.4]), np.array([8, 2, 3, 1]),
-            np.array([2, 4, 7, 2]), np.array([11, 13, 3, 2.1]), np.array([9, 12, 4, 1])
-        ]
-    )
-    dataset3 = np.vstack(
-        [
-            np.array([1, 2, 3, 2]), np.array([1, 2, 3, 6]), np.array([1, 2, 3, 2]), np.array([1, 2, 3, 6])
-        ]
-    )
-    
-    # print(f'datasets shapes : {dataset1.shape}, {dataset3.shape}')
-    
-    # cos_sim = cosine_similarity(
-    #     dataset1, dataset3
-    # )
-    # print(cos_sim.flatten().round(4))
-    vocab_dict = collections.OrderedDict({
-        'key1': dataset3
-    })
-    topic = TopicURL(vocab_dict)
-    print(topic.cosine_similarity_matrix(dataset1, dataset3))
-    
-    
+    def run(self, embeddings, b_value, threshold_other):
+        return self.transform_dict(
+            self.form_distances_vocab(embeddings, threshold_other=threshold_other), b_value)
     
