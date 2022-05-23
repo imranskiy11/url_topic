@@ -27,8 +27,10 @@ class TopicURL:
     def get_mult_tensor(self, l: list, mult_value: float=10):
         return np.array([10 if i > 0 else 0 for i in l])
         
-    def cosine_similarity_matrix(self, vecs1, vecs2, round_val=4):
-        return cosine_similarity(vecs1, vecs2).flatten()    
+    def cosine_similarity_matrix(self, vecs1, vecs2, cosine_dist_threshold=0, round_val=4):
+        return cosine_similarity(vecs1, vecs2).flatten()  
+        # cosine_sim = cosine_similarity(vecs1, vecs2).flatten()        
+        # return cosine_sim[cosine_sim >= cosine_dist_threshold]
     
     def form_distances_vocab(self, embeddings, threshold_other=0.3, round_val=4):
         # if not bool(embeddings):
@@ -56,6 +58,7 @@ class TopicURL:
         return {class_names[i]: round(softmax_layer_output[i], round_value) for i in range(len(softmax_layer_output))}
     
     
-    def run(self, embeddings, b_value):
-        return self.transform_dict(self.form_distances_vocab(embeddings), b_value)
+    def run(self, embeddings, b_value, threshold_other):
+        return self.transform_dict(
+            self.form_distances_vocab(embeddings, threshold_other=threshold_other), b_value)
     
