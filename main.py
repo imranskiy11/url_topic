@@ -1,3 +1,4 @@
+from ast import keyword
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -25,7 +26,7 @@ from test_data import titles as ttls
 from test_data import contents as cntnt
 
 
-def main():
+def topic_run(keywords=None, description=None, title=None, content=None):
     print(colored(f'Starting /// load embedder and models', 'green'))
     sentence_embedder = SentenceEmbedder()
     agg = AgglomerativeClustering(affinity='cosine', linkage='average') 
@@ -56,17 +57,20 @@ def main():
     for i, url in tqdm(enumerate(test_dictionary)):
         print(f'URL : {url}')
         #test data
-        keywords = kw[i]
-        description = sent_tokenize(desc[i])
-        title = sent_tokenize(ttls[i])
-        content = sent_tokenize(cntnt[i])
+        curr_keywords = keywords[i]
+        if bool(description):
+            curr_description = sent_tokenize(description[i].strip())
+        if bool(title):    
+            curr_title = sent_tokenize(title[i].strip())
+        # if bool(content):
+        #     curr_content = sent_tokenize(content[i])
     
     
         url_struct = URLStructure(
             url_path=url,
-            keywords=keywords,
-            description=description,
-            title=title,
+            keywords=curr_keywords,
+            description=curr_description,
+            title=curr_title,
             content=None,
             fill_dict=True
         )
@@ -83,7 +87,7 @@ def main():
             topic.run(output_embeddings, b_value=0.35, threshold_other=0.3))
         predicted_list.append(list(distances_vocab.keys()))
         
-        if len(set(list(distances_vocab.keys())[:3]).intersection(set(test_dictionary[url]))) > 0:
+        if len(set(list(distances_vocab.keys())).intersection(set(test_dictionary[url]))) > 0:
             marks.append(1)
         else:
             marks.append(0)
@@ -111,4 +115,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    topic_run(kw, desc, ttls, cntnt)
