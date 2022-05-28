@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+
+	// "github.com/gocolly/colly"
 )
 
 func main() {
-	var test_string string = "heey whao happen?"
-	fmt.Printf("Look at this : %s", test_string)
+
+	fmt.Println("Starting")
+	
 }
