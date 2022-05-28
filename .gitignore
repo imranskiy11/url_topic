@@ -14,3 +14,5 @@ vectorizing/__pycache__/
 __pycache__/
 test_data.py
 result.csv
+_web_topic.py
+_test.py

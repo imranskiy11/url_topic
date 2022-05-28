@@ -26,7 +26,7 @@ from test_data import titles as ttls
 from test_data import contents as cntnt
 
 
-def topic_run(keywords=None, description=None, title=None, content=None):
+def topic_run(keywords=None, description=None, title=None, content=None, print_feedback_tokens=True):
     print(colored(f'Starting /// load embedder and models', 'green'))
     sentence_embedder = SentenceEmbedder()
     agg = AgglomerativeClustering(affinity='cosine', linkage='average') 
@@ -72,20 +72,27 @@ def topic_run(keywords=None, description=None, title=None, content=None):
             description=curr_description,
             title=curr_title,
             content=None,
-            fill_dict=True
+            fill_dict=True,
+            print_feedback_tokens=print_feedback_tokens
         )
         
         url_struct.fill_embed_fields(embedder=sentence_embedder)
         url_struct.form_labels_centroid_maintokens(
-            agg_clusterer=agg, centroid_clf=clf, verbose=verbose, save_feedback_tokens=save_feedback_tokens)
+            agg_clusterer=agg, centroid_clf=clf)
         url_struct.form_output_embeddings(
-            agg_clusterer=agg, verbose=verbose, save_feedback_tokens=save_feedback_tokens)
+            agg_clusterer=agg)
         
         output_embeddings = url_struct.output_summary_embeddings
+        
+        if print_feedback_tokens:
+            print(f'Feedback tokens : {url_struct.output_feedback_tokens}')
         
         distances_vocab = just_non_zero_values_dict(
             topic.run(output_embeddings, b_value=0.35, threshold_other=0.3))
         predicted_list.append(list(distances_vocab.keys()))
+        
+        pred_topic = list(distances_vocab.keys())
+        print(f'Predicted topics : {pred_topic}\n\n')
         
         if len(set(list(distances_vocab.keys())).intersection(set(test_dictionary[url]))) > 0:
             marks.append(1)
