@@ -73,6 +73,9 @@ class WebSeparator:
         self.vocab_struct.fill_centroid_vocab()
 
         self.separator = TopicURL(vocab_embeddings=self.vocab_struct.embedded_vocab)
+        
+        print(self.vocab_struct.embedded_vocab)
+
 
     def _connect_mongo(self):
         client = MongoClient(self.connect_params['connection_string'])
@@ -130,6 +133,8 @@ class WebSeparator:
                     ))
 
                 # print(f'distances vocab : {distances_vocab}')
+                
+                
 
                 pred_topic = list(distances_vocab.keys())
                 print(f'Predicted topics : {pred_topic}\n\n')
