@@ -111,7 +111,7 @@ class TopicURL:
         # return cosine_sim[cosine_sim >= cosine_dist_threshold]
         
     
-    def form_distances_vocab(self, embeddings, threshold_other=0.3, round_val=4, calc_type='scores'):
+    def form_distances_vocab(self, embeddings, threshold_other=0.3, round_val=4, calc_type='cosine', agg_func='no_median'):
         # if not bool(embeddings):
         #     raise Exception(colored('embeddings is None', 'red'))
         vocab_distances = collections.OrderedDict()
@@ -120,9 +120,15 @@ class TopicURL:
                 vocab_distances[class_name] = self.get_scores_from_semantic_search(
                     util.semantic_search(self.vocab_embeddings[class_name], embeddings))
             else:
-                vocab_distances[class_name] = np.median(
-                    self.cosine_similarity_matrix(
-                        embeddings, self.vocab_embeddings[class_name]))
+                if agg_func == 'median':
+                    vocab_distances[class_name] = np.median(
+                        self.cosine_similarity_matrix(
+                            embeddings, self.vocab_embeddings[class_name]))
+                else:
+                    _val = self.cosine_similarity_matrix(
+                            embeddings, self.vocab_embeddings[class_name])
+                    # vocab_distances[class_name] = np.around((np.min(_val) + np.max(_val))/2**np.min(_val) + np.max(_val), 2)
+                    vocab_distances[class_name] = np.around(np.mean(np.array([np.median(_val), np.mean(_val), np.max(_val)])), 3)
         if max(list(vocab_distances.values())) <= threshold_other:
             return {'Другое': 1.0}
         return dict(sorted(vocab_distances.items(), key=lambda x: x[1], reverse=True))
@@ -143,9 +149,9 @@ class TopicURL:
     
 
     def run(self, embeddings, b_value, threshold_other, transform=False):
-        curr_dict = self.form_distances_vocab(embeddings, threshold_other=threshold_other)
-        if not transform:
-            return{ k:v for k, v in curr_dict.items() if v >= 0.37}
+        if transform:
+            return self.transform_dict(
+                self.form_distances_vocab(embeddings, threshold_other=threshold_other), b_value)
         else:
-            return self.transform_dict(curr_dict, b_value)
+            return self.form_distances_vocab(embeddings, threshold_other=threshold_other)
     

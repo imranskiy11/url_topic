@@ -32,11 +32,6 @@ from test_data import titles as ttls
 from test_data import contents as cntnt
 
 
-
-
-     
-
-
 def get_scores_from_semantic_search(hits: list):
     current_max = 0
     for i in hits:
@@ -47,7 +42,9 @@ def get_scores_from_semantic_search(hits: list):
         #         current_max = j['score']
         # scores.append(current_max)
             means.append(j['score'])
-        scores.append(np.mean(np.array(means)))
+        # scores.append(np.mean(np.array(means)))
+        # scores.append(np.around((np.min(means) + np.max(means))/2**np.min(means) + np.max(means), 2))
+        scores.append(np.around(np.mean(np.array([np.median(means), np.mean(means), np.max(means)])), 3))
     return np.around(np.array(scores), 3)
 
 
@@ -94,66 +91,66 @@ def topic_run(keywords=None, description=None, title=None, content=None, print_f
         curr_keywords = keywords[i]
         print(f'keywords: {curr_keywords}')
         
-        range_iter = 3
+        range_iter = 4
         if bool(description):
             curr_description = sent_tokenize(description[i].strip())
-            curr_description = list() #
-            curr_description.extend(
-                    list(
-                        {k:v for k, v in kw_model.extract_keywords(
-                        description[i],
-                        use_maxsum=True,  
-                        use_mmr=False, 
-                        # diversity=0.8,  
-                        keyphrase_ngram_range=(1, range_iter), 
-                        stop_words=stopwords, 
-                        nr_candidates=20, 
-                        top_n=5
-                    ) if v < 0.7}.keys()
-                    )
-                )
+            # curr_description = list() #
+            # curr_description.extend(
+            #         list(
+            #             {k:v for k, v in kw_model.extract_keywords(
+            #             description[i],
+            #             use_maxsum=True,  
+            #             use_mmr=False, 
+            #             # diversity=0.8,  
+            #             keyphrase_ngram_range=(1, range_iter), 
+            #             stop_words=stopwords, 
+            #             nr_candidates=20, 
+            #             top_n=5
+            #         ) if v < 0.7}.keys()
+            #         )
+            #     )
             print(f'description : {curr_description}')
         if bool(title):    
-            # curr_title = sent_tokenize(title[i].strip())
-            curr_title = list() #
-            curr_title.extend(
-                    list(
-                        {k:v for k, v in kw_model.extract_keywords(
-                        title[i],
-                        use_maxsum=True,  
-                        use_mmr=False, 
-                        # diversity=0.8,  
-                        keyphrase_ngram_range=(1, range_iter), 
-                        stop_words=stopwords, 
-                        nr_candidates=20, top_n=5
-                    ) if v < 0.7}.keys()
-                    )
-                )
+            curr_title = sent_tokenize(title[i].strip())
+            # curr_title = list() #
+            # curr_title.extend(
+            #         list(
+            #             {k:v for k, v in kw_model.extract_keywords(
+            #             title[i],
+            #             use_maxsum=True,  
+            #             use_mmr=False, 
+            #             # diversity=0.8,  
+            #             keyphrase_ngram_range=(1, range_iter), 
+            #             stop_words=stopwords, 
+            #             nr_candidates=20, top_n=5
+            #         ) if v < 0.7}.keys()
+            #         )
+            #     )
             print(f'title: {curr_title}')
             # if bool(content):
             #     curr_content = word_tokenize(content[i])
         if bool(content):
             pass
-        #     # curr_content = ' '.join(sent_tokenize(' '.join(sent_tokenize(content[i])))).split('  ')
-        #     # curr_content = [token for token in curr_content if token.lower() not in stopwords]
-        #     # curr_content = word_tokenize(content[i])
-            curr_content = list()
-            curr_content.extend(
-                list(
-                    {k:v for k, v in kw_model.extract_keywords(
-                    content[i],
-                    use_maxsum=True,  
-                    use_mmr=False, 
-                    # diversity=0.8,  
-                    keyphrase_ngram_range=(1, range_iter), 
-                    stop_words=stopwords, 
-                    nr_candidates=20, top_n=5
-                ) if v < 0.7}.keys()
-                )
-                )
+            # curr_content = ' '.join(sent_tokenize(' '.join(sent_tokenize(content[i])))).split('  ')
+            # curr_content = [token for token in curr_content if token.lower() not in stopwords]
+            # curr_content = word_tokenize(content[i])
+            # curr_content = list()
+            # curr_content.extend(
+            #     list(
+            #         {k:v for k, v in kw_model.extract_keywords(
+            #         content[i],
+            #         use_maxsum=True,  
+            #         use_mmr=False, 
+            #         # diversity=0.8,  
+            #         keyphrase_ngram_range=(1, range_iter), 
+            #         stop_words=stopwords, 
+            #         nr_candidates=20, top_n=5
+            #     ) if v < 0.7}.keys()
+            #     )
+            #     )
             
             
-            print(f'Content : {curr_content}')
+            # print(f'Content : {curr_content}')
     
     
         url_struct = URLStructure(
@@ -161,7 +158,7 @@ def topic_run(keywords=None, description=None, title=None, content=None, print_f
             keywords=curr_keywords,
             description=curr_description,
             title=curr_title,
-            content=curr_content,
+            content=None,
             fill_dict=True,
             print_feedback_tokens=print_feedback_tokens
         )
